@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+         version="5.0">
+
+    <filter-mapping>
+        <filter-name>RedirectToAuthFilter</filter-name>
+        <url-pattern>/authed/</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>RedirectToAuthFilter</filter-name>
+        <filter-class>com.example.javaeeproject.filters.RedirectToAuthFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>CheckAuthFilter</filter-name>
+        <url-pattern>/main-servlet/</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>CheckAuthFilter</filter-name>
+        <filter-class>com.example.javaeeproject.filters.CheckAuthFilter</filter-class>
+    </filter>
+
+    <listener>
+        <listener-class>com.example.javaeeproject.listeners.ClearCartListener</listener-class>
+    </listener>
+
+</web-app>
