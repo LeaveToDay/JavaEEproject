@@ -4,75 +4,47 @@ import com.example.javaeeproject.db.DBManager;
 import com.example.javaeeproject.model.Items;
 import com.example.javaeeproject.repository.ItemRepository;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ItemRepositoryImpl implements ItemRepository {
     @Override
     public boolean addItem(Items item) {
-        int rows = 0;
         try {
-            PreparedStatement statement = DBManager.getConnection().prepareStatement("" +
-                    "INSERT INTO items (id,name,price,amount) " +
-                    "VALUES (NULL, ?,?,?)" +
-                    "");
-            statement.setString(1, item.getName());
-            statement.setInt(2, item.getPrice());
-            statement.setInt(3, item.getAmount());
+            DBManager.getSession().beginTransaction();
 
-            rows = statement.executeUpdate();
-            statement.close();
+            DBManager.getSession().save(item);
+            DBManager.getSession().getTransaction().commit();
 
         } catch (Exception e) {
             return false;
         }
-        return rows > 0;
+        return true;
     }
 
     @Override
     public ArrayList<Items> getItems() {
-        ArrayList<Items> items = new ArrayList<>();
+        List<Items> items = new ArrayList<>();
         try {
-            PreparedStatement statement = DBManager.getConnection().prepareStatement("" +
-                    "SELECT id,name,price,amount " +
-                    "FROM items ORDER BY price DESC");
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                items.add(new Items(
-                        resultSet.getInt("id"),
-                        resultSet.getString("name"),
-                        resultSet.getInt("price"),
-                        resultSet.getInt("amount")
-                ));
-            }
-            statement.close();
+            CriteriaBuilder builder = DBManager.getSession().getCriteriaBuilder();
+            CriteriaQuery<Items> criteria = builder.createQuery(Items.class);
+            Root<Items> root = criteria.from(Items.class);
+            criteria.select(root);
+            items = DBManager.getSession().createQuery(criteria).getResultList();
         } catch (Exception e) {
-            return items;
+            return new ArrayList<>(items);
         }
-        return items;
+        return new ArrayList<>(items);
     }
 
     @Override
     public Items getItem(int id) {
         Items item = null;
         try {
-            PreparedStatement statement = DBManager.getConnection().prepareStatement("" +
-                    "SELECT id,name,price,amount " +
-                    "FROM items WHERE id = ? LIMIT 1");
-            statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                item = new Items(
-                        resultSet.getInt("id"),
-                        resultSet.getString("name"),
-                        resultSet.getInt("price"),
-                        resultSet.getInt("amount")
-                );
-            }
-            statement.close();
+           item = DBManager.getSession().get(Items.class, id);
         } catch (Exception e) {
             return item;
         }
@@ -81,39 +53,26 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public boolean saveItem(Items item) {
-        int rows = 0;
         try {
-            PreparedStatement statement = DBManager.getConnection().prepareStatement("" +
-                    "UPDATE items SET name = ?, price = ?, amount = ? " +
-                    "WHERE id = ? ");
-            statement.setString(1, item.getName());
-            statement.setInt(2, item.getPrice());
-            statement.setInt(3, item.getAmount());
-            statement.setInt(4, item.getId());
-
-            rows = statement.executeUpdate();
-            statement.close();
+            DBManager.getSession().beginTransaction();
+            DBManager.getSession().update(item);
+            DBManager.getSession().getTransaction().commit();
 
         } catch (Exception e) {
             return false;
         }
-        return false;
+        return true;
     }
 
     @Override
     public boolean deleteItem(Items item) {
-        int rows = 0;
         try {
-            PreparedStatement statement = DBManager.getConnection().prepareStatement("" +
-                    "DELETE FROM items WHERE id = ?");
-            statement.setInt(1, item.getId());
-
-            rows = statement.executeUpdate();
-            statement.close();
-
+            DBManager.getSession().beginTransaction();
+            DBManager.getSession().delete(item);
+            DBManager.getSession().getTransaction().commit();
         } catch (Exception e) {
             return false;
         }
-        return rows > 0;
+        return true;
     }
 }

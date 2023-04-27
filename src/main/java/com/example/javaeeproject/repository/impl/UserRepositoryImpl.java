@@ -4,49 +4,38 @@ import com.example.javaeeproject.db.DBManager;
 import com.example.javaeeproject.model.Users;
 import com.example.javaeeproject.repository.UserRepository;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.List;
 
 public class UserRepositoryImpl implements UserRepository {
     @Override
     public boolean addUser(Users user) {
-        int rows = 0;
         try {
-            PreparedStatement statement = DBManager.getConnection().prepareStatement("" +
-                    "INSERT INTO users (id,email,password,full_name) " +
-                    "VALUES (NULL, ?,?,?)" +
-                    "");
-            statement.setString(1, user.getEmail());
-            statement.setString(2, user.getPassword());
-            statement.setString(3, user.getFull_name());
-
-            rows = statement.executeUpdate();
-            statement.close();
+            DBManager.getSession().beginTransaction();
+            DBManager.getSession().save(user);
+            DBManager.getSession().getTransaction().commit();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return rows > 0;
+        return true;
     }
 
     @Override
     public Users getUser(String email) {
         Users user = null;
         try {
-            PreparedStatement statement = DBManager.getConnection().prepareStatement("SELECT * FROM users WHERE email = ?");
-            statement.setString(1, email);
+            CriteriaBuilder builder = DBManager.getSession().getCriteriaBuilder();
+            CriteriaQuery<Users> criteria = builder.createQuery(Users.class);
+            Root<Users> root = criteria.from(Users.class);
+            criteria.select(root).where(builder.equal(root.get("email"), email));
+            List<Users> users = DBManager.getSession().createQuery(criteria).getResultList();
 
-            ResultSet resultSet = statement.executeQuery();
+            if (users.size() > 0)
+                user = users.get(0);
 
-            if (resultSet.next()) {
-                user = new Users(
-                        resultSet.getInt("id"),
-                        resultSet.getString("email"),
-                        resultSet.getString("password"),
-                        resultSet.getString("full_name")
-                );
-            }
-            statement.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

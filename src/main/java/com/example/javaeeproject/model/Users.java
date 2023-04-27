@@ -1,10 +1,17 @@
 package com.example.javaeeproject.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "users")
 public class Users {
-    private int id;
-    private String email;
-    private String password;
-    private String full_name;
+    @Id @Column(name = "id") private int id;
+    @Column(name = "email") private String email;
+    @Column(name = "password") private String password;
+    @Column(name = "full_name") private String full_name;
 
     public Users() {
     }

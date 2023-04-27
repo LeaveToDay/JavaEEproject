@@ -1,12 +1,19 @@
 package com.example.javaeeproject.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
+@Entity
+@Table(name = "items")
 public class Items implements Serializable {
-    private int id;
-    private String name;
-    private int price;
-    private int amount;
+
+    @Id @Column(name = "id") private int id;
+    @Column(name = "name") private String name;
+    @Column(name = "price") private int price;
+    @Column(name = "amount") private int amount;
 
     public Items() {
     }
