@@ -11,13 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemRepositoryImpl implements ItemRepository {
+
+
     @Override
     public boolean addItem(Items item) {
         try {
-            DBManager.getSession().beginTransaction();
-
+            if (DBManager.getTransaction() == null || !DBManager.getTransaction().isActive())
+                DBManager.setTransaction(DBManager.getSession().beginTransaction());
             DBManager.getSession().save(item);
-            DBManager.getSession().getTransaction().commit();
+            DBManager.getTransaction().commit();
+
+            DBManager.getSession().evict(item);
 
         } catch (Exception e) {
             return false;
@@ -54,9 +58,10 @@ public class ItemRepositoryImpl implements ItemRepository {
     @Override
     public boolean saveItem(Items item) {
         try {
-            DBManager.getSession().beginTransaction();
+            if (DBManager.getTransaction() == null || !DBManager.getTransaction().isActive())
+                DBManager.setTransaction(DBManager.getSession().beginTransaction());
             DBManager.getSession().update(item);
-            DBManager.getSession().getTransaction().commit();
+            DBManager.getTransaction().commit();
 
         } catch (Exception e) {
             return false;
@@ -67,9 +72,10 @@ public class ItemRepositoryImpl implements ItemRepository {
     @Override
     public boolean deleteItem(Items item) {
         try {
-            DBManager.getSession().beginTransaction();
+            if (DBManager.getTransaction() == null || !DBManager.getTransaction().isActive())
+                DBManager.setTransaction(DBManager.getSession().beginTransaction());
             DBManager.getSession().delete(item);
-            DBManager.getSession().getTransaction().commit();
+            DBManager.getTransaction().commit();
         } catch (Exception e) {
             return false;
         }

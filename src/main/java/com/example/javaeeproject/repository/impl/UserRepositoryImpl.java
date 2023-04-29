@@ -13,10 +13,12 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public boolean addUser(Users user) {
         try {
-            DBManager.getSession().beginTransaction();
+            if (DBManager.getTransaction() == null || !DBManager.getTransaction().isActive())
+                DBManager.setTransaction(DBManager.getSession().beginTransaction());
             DBManager.getSession().save(user);
-            DBManager.getSession().getTransaction().commit();
+            DBManager.getTransaction().commit();
 
+            DBManager.getSession().evict(user);
         } catch (Exception e) {
             e.printStackTrace();
         }

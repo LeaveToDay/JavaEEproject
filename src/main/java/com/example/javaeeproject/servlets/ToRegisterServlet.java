@@ -3,6 +3,7 @@ package com.example.javaeeproject.servlets;
 import com.example.javaeeproject.model.Users;
 import com.example.javaeeproject.repository.impl.UserRepositoryImpl;
 import com.example.javaeeproject.services.UserService;
+import com.example.javaeeproject.utils.PasswordHasher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -38,8 +39,9 @@ public class ToRegisterServlet extends HttpServlet {
             if (user == null) {
                 Users newUser = new Users();
                 newUser.setEmail(email);
-                newUser.setPassword(password);
+                newUser.setPassword(PasswordHasher.encryptPassword(password));
                 newUser.setFull_name(fullName);
+                newUser.setId(0);
                 userService.addUser(newUser);
                 redirect = "/login";
             }

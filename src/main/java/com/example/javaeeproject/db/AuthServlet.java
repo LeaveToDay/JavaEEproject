@@ -3,6 +3,7 @@ package com.example.javaeeproject.db;
 import com.example.javaeeproject.model.Users;
 import com.example.javaeeproject.repository.impl.UserRepositoryImpl;
 import com.example.javaeeproject.services.UserService;
+import com.example.javaeeproject.utils.PasswordHasher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -32,7 +33,7 @@ public class AuthServlet extends HttpServlet {
         Users user = userService.getUser(email);
 
         if (user != null) {
-            if (user.getPassword().equals(password)) {
+            if (PasswordHasher.checkPasswords(password, user.getPassword())) {
                 request.getSession().setAttribute("CURRENT_USER", user);
                 redirect = "/";
             }
