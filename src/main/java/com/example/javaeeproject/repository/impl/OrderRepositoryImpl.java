@@ -65,7 +65,7 @@ public class OrderRepositoryImpl implements OrderRepository {
             order.setItems(DBManager.getSession().createQuery(orderItemCriteriaQuery).getResultList());
 
             for (OrderItem orderItem: order.getItems()) {
-                orderItem.setItem(DBManager.getSession().get(Items.class, orderItem.getId()));
+                orderItem.setItem(DBManager.getSession().get(Items.class, orderItem.getItem_id()));
             }
 
         } catch (Exception e) {

@@ -14,7 +14,6 @@
 <body>
 <%@include file="head.jsp" %>
 <%@include file="navbar.jsp" %>
-<h1>Item List</h1>
 <div class="container">
     <div class="row mt-5">
         <div class="col-sm-12">
