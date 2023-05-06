@@ -14,6 +14,7 @@
       <a class="nav-item nav-link" href="/addItem.jsp">Add item</a>
       <a class="nav-item nav-link" href="/viewCart">Cart</a>
       <a class="nav-item nav-link" href="/itemList">Store</a>
+      <a class="nav-item nav-link" href="/viewOrders.jsp">View Orders</a>
       <a class="nav-item nav-link" href="/profile" style="color: orange;"><%=currentUser.getFull_name()%></a>
       <a class="nav-item nav-link" href="/LogOutServlet" style="color: red">LogOut</a>
       <%

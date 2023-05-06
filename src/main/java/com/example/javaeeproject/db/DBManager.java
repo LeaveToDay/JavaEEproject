@@ -1,6 +1,8 @@
 package com.example.javaeeproject.db;
 
 import com.example.javaeeproject.model.Items;
+import com.example.javaeeproject.model.Order;
+import com.example.javaeeproject.model.OrderItem;
 import com.example.javaeeproject.model.Users;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -18,6 +20,8 @@ public class DBManager {
             configuration.configure("hibernate.cfg.xml");
             configuration.addAnnotatedClass(Items.class);
             configuration.addAnnotatedClass(Users.class);
+            configuration.addAnnotatedClass(Order.class);
+            configuration.addAnnotatedClass(OrderItem.class);
 
             SessionFactory sessionFactory
                     = configuration.buildSessionFactory();

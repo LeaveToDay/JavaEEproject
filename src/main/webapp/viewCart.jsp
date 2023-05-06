@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.example.javaeeproject.model.Items" %>
 <!DOCTYPE html>
@@ -49,6 +48,10 @@
                 <%}%>
                 </tbody>
             </table>
+            <form method="post" action="createOrder">
+                <input type="hidden" name="userId" value="<%= currentUser.getId() %>">
+                <input type="submit" class="btn btn-info btn-sm" value="Create Order">
+            </form>
         </div>
     </div>
 </div>
